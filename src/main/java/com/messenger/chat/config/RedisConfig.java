@@ -1,5 +1,7 @@
 package com.messenger.chat.config;
 
+import com.messenger.chat.redis.RedisSubscriber;
+import com.messenger.chat.websocket.ChatWebSocketHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -7,7 +9,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import com.messenger.chat.redis.RedisSubscriber;
 
 @Configuration
 public class RedisConfig {
@@ -32,7 +33,7 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisSubscriber redisSubscriber() {
-        return new RedisSubscriber();
+    public RedisSubscriber redisSubscriber(ChatWebSocketHandler chatWebSocketHandler) {
+        return new RedisSubscriber(chatWebSocketHandler);
     }
 }

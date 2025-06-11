@@ -72,9 +72,15 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             log.info("📤 Publicando no canal '{}'", canal);
         } else {
             ChatMessage mensagem = (ChatMessage) JsonUtils.toObject(payload, ChatMessage.class);
+            mensagem.setFrom(remetenteEmail);
+
             messageService.salvarMensagemOffline(mensagem);
             log.info("💾 Destinatário offline, mensagem salva no DynamoDB.");
         }
+    }
+
+    public WebSocketSession getSession(String email) {
+        return sessions.get(email);
     }
 
     private String extrairToken(WebSocketSession session) {
