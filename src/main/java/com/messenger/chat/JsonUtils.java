@@ -31,5 +31,15 @@ public class JsonUtils {
             return null;
         }
     }
+
+    public static String toJson(Object object) {
+        try {
+            return mapper.writeValueAsString(object);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
 

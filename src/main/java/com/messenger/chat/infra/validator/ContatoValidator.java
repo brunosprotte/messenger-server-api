@@ -1,28 +1,23 @@
 package com.messenger.chat.infra.validator;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 import software.amazon.awssdk.services.dynamodb.model.GetItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.GetItemResponse;
 
-import java.net.URI;
 import java.util.Map;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class ContatoValidator {
 
     private static final String TABELA_CONTATOS = "contatos";
 
     private final DynamoDbClient dynamoDb;
-
-    public ContatoValidator() {
-        this.dynamoDb = DynamoDbClient.builder()
-                .region(Region.US_EAST_1)
-                .endpointOverride(URI.create("http://localhost:4566"))
-                .build();
-    }
 
     /**
      * Verifica se o usuário remetente pode enviar mensagens ao destinatário.
@@ -44,7 +39,10 @@ public class ContatoValidator {
 
         GetItemResponse response = dynamoDb.getItem(request);
 
-        if (!response.hasItem()) return false;
+        if (!response.hasItem()) {
+            log.info("Contato entre {} e {} não encontrado.", remetenteEmail, destinatarioEmail);
+            return false;
+        }
 
         Map<String, AttributeValue> item = response.item();
 
